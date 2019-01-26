@@ -11,7 +11,14 @@ import InputBase from '@material-ui/core/InputBase';
 export default class SearchAppBar extends React.Component{
     constructor(props) {
         super(props);
-        this.state = {classes: props};
+        this.state = {
+            classes: props,
+            userInput: "",
+        };
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(event) {
+        this.setState({userInput: event.target.value});
     }
     render(){
         return (
@@ -21,9 +28,6 @@ export default class SearchAppBar extends React.Component{
                         <IconButton className={this.state.classes.menuButton} color="inherit" aria-label="Open drawer">
                             {/*<MenuIcon />*/}
                         </IconButton>
-                        <Typography className={this.state.classes.title} variant="h6" color="inherit" noWrap>
-                            Material-UI
-                        </Typography>
                         <div className={this.state.classes.grow} />
                         <div className={this.state.classes.search}>
                             <div className={this.state.classes.searchIcon}>
@@ -35,10 +39,12 @@ export default class SearchAppBar extends React.Component{
                                     root: this.state.classes.inputRoot,
                                     input: this.state.classes.inputInput,
                                 }}
+                                onChange={this.handleChange}
                             />
                         </div>
                     </Toolbar>
                 </AppBar>
+                <div>{this.state.userInput}</div>
             </div>
         );
     }
