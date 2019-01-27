@@ -15,6 +15,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from 'axios';
+import moment from 'moment';
 
 const styles = theme => ({
   root: {
@@ -214,12 +215,12 @@ class App extends Component {
   }
 
   handleFromDateChange(event) {
-    var date = new Date(event.target.value).toISOString();
+    var date = moment(event.target.value).format('YYYY-MM-DD[T]HH:mm:ss.SSSS+0000');
     this.setState({fromDate: date})
   }
 
   handleToDateChange(event) {
-    var date = new Date(event.target.value).toISOString();
+    var date = moment(event.target.value).format('YYYY-MM-DD[T]HH:mm:ss.SSSS+0000');
     this.setState({toDate: date})
   }
 
