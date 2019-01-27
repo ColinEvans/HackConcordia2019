@@ -83,9 +83,10 @@ const toggleContainer = {
   justifyContent: 'center',
 };
 
-const testData = [
-    "state",
-    {
+const testData = {
+    "state": [
+        "test",
+      {
         playDate:"2018-02-19T21:00:02.000+0000",
         artistId:186,
         songId:18451301,
@@ -93,9 +94,8 @@ const testData = [
         style:"ROCK",
         latitude:41.50082,
         longitude:-99.6809
-    },
-
-    {
+      },
+      {
         playDate:"2018-02-19T21:00:02.000+0000",
         artistId:186,
         songId:18451301,
@@ -103,9 +103,8 @@ const testData = [
         style:"ROCK",
         latitude:41.50082,
         longitude:-99.6809
-        },
-
-    {
+      },
+      {
         playDate:"2018-02-19T21:00:02.000+0000",
         artistId:186,
         songId:18451301,
@@ -113,8 +112,9 @@ const testData = [
         style:"ROCK",
         latitude:41.50082,
         longitude:-99.6809
-        },
-];
+      }
+    ]
+};
 
 class App extends Component {
   constructor() {
@@ -126,6 +126,8 @@ class App extends Component {
       toDate: "",
       locationType: "",
       location: "",
+      showResults: false,
+      data: {},
     };
     this.handleSearchData = this.handleSearchData.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -134,6 +136,7 @@ class App extends Component {
     this.handleLocationTypeChange = this.handleLocationTypeChange.bind(this);
     this.handleLocationData = this.handleLocationData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShowResults = this.handleShowResults.bind(this);
   }
 
   handleSearchData(data) {
@@ -144,25 +147,25 @@ class App extends Component {
     this.setState({location: data});
   }
 
+  handleShowResults() {
+    var toggle = this.state.showResults;
+    this.setState({showResults: !toggle})
+  }
+
   // Call API on submit
   handleSubmit(event) {
+    this.handleShowResults();
     //   fetch("https://api.example.com/items")
     //       .then(res => res.json())
     //       .then(
     //           (result) => {
-    //             this.setState({
-    //               isLoaded: true,
-    //               items: result.items
-    //             });
+    //             this.setState({data: result});
     //           },
     //           // Note: it's important to handle errors here
     //           // instead of a catch() block so that we don't swallow
     //           // exceptions from actual bugs in components.
     //           (error) => {
-    //             this.setState({
-    //               isLoaded: true,
-    //               error
-    //             });
+    //               console.log("Got an error doing GET request", error);
     //           }
     //       )
   }
@@ -188,7 +191,8 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <Paper elevation={1} style={{"width": "50%"}}>
+          {!this.state.showResults ?
+          <Paper elevation={1} style={{"width": "50%", "margin": "2rem 0 2rem 0", "padding": "2rem"}}>
             <Grid container spacing={0} style={{"width": "100%"}}>
               <Grid item xs={12} style={{}}>
                 <SearchAppBar classes={styles} searchLabel="Search" handlerFromParent={this.handleSearchData}></SearchAppBar>
@@ -200,6 +204,7 @@ class App extends Component {
                   </Grid>
                   <Grid xs={10}>
                     <RadioGroup
+                        style={{"margin": "1rem 0 1rem 0"}}
                         row
                         value={this.filter}
                         onChange={this.handleFilterChange}
@@ -211,7 +216,7 @@ class App extends Component {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={6} style={{"margin": "1rem 0 1rem 0"}}>
+              <Grid item xs={6} style={{"margin": "2rem 0 2rem 0"}}>
                   <form noValidate style={{}}>
                     <TextField
                         id="date"
@@ -226,7 +231,7 @@ class App extends Component {
                   </form>
 
               </Grid>
-              <Grid item xs={6} style={{"margin": "1rem 0 1rem 0"}}>
+              <Grid item xs={6} style={{"margin": "2rem 0 2rem 0"}}>
                   <form noValidate>
                     <TextField
                         id="date"
@@ -247,6 +252,7 @@ class App extends Component {
                   </Grid>
                   <Grid item xs={9}>
                     <RadioGroup
+                        style={{"margin": "1rem 0 1rem 0"}}
                         row
                         value={this.locationType}
                         onChange={this.handleLocationTypeChange}
@@ -261,9 +267,18 @@ class App extends Component {
                 <SearchAppBar classes={styles} searchLabel="Location" handlerFromParent={this.handleLocationData}></SearchAppBar>
               </Grid>
             </Grid>
-            <ResultPage classes={styles} displayData={testData}></ResultPage>
+            <Button variant="contained" color="primary" style={{"margin-top": "3rem"}} onClick={this.handleSubmit}>Submit</Button>
           </Paper>
-          <Button variant="contained" color="primary" style={{"margin-top": "1rem"}} onClick={this.handleSubmit}>Submit</Button>
+
+           :
+
+          <div style={{"margin-top": "2rem"}}>
+          <ResultPage classes={styles} displayData={testData.state}></ResultPage>
+          <Button variant="contained" color="primary" style={{"margin-top": "3rem"}} onClick={this.handleSubmit}>Search Again</Button>
+          </div>
+
+          }
+          {/*{this.state.showResults ? <ResultPage classes={styles} displayData={testData.state}></ResultPage> : null}*/}
         </header>
       </div>
     );

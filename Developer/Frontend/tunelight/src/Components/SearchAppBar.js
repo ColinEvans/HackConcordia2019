@@ -19,7 +19,6 @@ export default class SearchAppBar extends React.Component{
         };
         this.handleClick = this.handleClick.bind(this);
         this.handleChange = this.handleChange.bind(this);
-
     }
     handleClick(event) {
         // This line gives a prop to this component so the parent can use and retrieve data.
