@@ -316,6 +316,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
+              <h1>TuneLight - Top Results</h1>
           <img src={logo} className="App-logo" alt="logo" />
           {!this.state.showResults ?
           <Paper elevation={1} style={{"width": "50%", "margin": "2rem 0 2rem 0", "padding": "2rem"}}>
@@ -323,7 +324,7 @@ class App extends Component {
               <Grid item xs={12} >
                 <Grid container alignItems="center">
                   <Grid xs={2} style={{"color":"black"}}>
-                    Filters
+                    Category
                   </Grid>
                   <Grid xs={10}>
                     <RadioGroup
