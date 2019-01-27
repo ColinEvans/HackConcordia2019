@@ -143,6 +143,7 @@ class App extends Component {
     this.handleLocationTypeChange = this.handleLocationTypeChange.bind(this);
     this.handleLocationData = this.handleLocationData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleReset = this.handleReset.bind(this);
     this.handleShowResults = this.handleShowResults.bind(this);
   }
 
@@ -219,9 +220,13 @@ class App extends Component {
     console.log("App.js, DATA:", this.state.data);
   }
 
+  handleReset(event) {
+    this.setState({showResults: false, data: []});
+  }
+
   // Call API on submit
   handleSubmit(event) {
-    this.handleShowResults();
+    this.setState({showResults: true});
     // Google maps api get request
     if (this.state.locationType === "city") {
       axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
@@ -240,9 +245,11 @@ class App extends Component {
               shortname = address_components[i].short_name;
             }
           }
-          this.setState({location: shortname});
+          this.setState({location: shortname, locationType: 'province'});
+          this.handleSubmit(null);
         }
       });
+      return;
     }
 
     var url_filter = '';
@@ -389,8 +396,8 @@ class App extends Component {
            :
 
           <div style={{"margin-top": "2rem"}}>
-          <ResultPage classes={styles} displayData={this.state.data} filter={this.state.filter}></ResultPage>
-          <Button variant="contained" color="primary" style={{"margin-top": "3rem"}} onClick={this.handleSubmit}>Search Again</Button>
+          <ResultPage classes={styles} displayData={this.state.data} filter={this.state.filter} location={this.state.location}></ResultPage>
+          <Button variant="contained" color="primary" style={{"margin-top": "3rem"}} onClick={this.handleReset}>Search Again</Button>
           </div>
 
           }

@@ -75,8 +75,15 @@ export default class ResultPage extends React.Component{
         console.log("FINAL DATA: ", displayData);
         const filter = this.props.filter;
         // const rows = displayData;
+        var title = `Top ${filter}s`;
+      if (this.props.location) {
+        title += ` in ${this.props.location}`;
+      } else {
+        title += ' overall';
+      }
         return (
-         <Paper >
+         <Paper style={{padding: '2rem'}}>
+               <h1 style={{color: 'black'}}>{title}</h1>
             <Table>
                 <TableHead>
                     <TableRow>
