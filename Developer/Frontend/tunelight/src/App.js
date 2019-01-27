@@ -10,6 +10,10 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const styles = theme => ({
   root: {
@@ -117,23 +121,58 @@ class App extends Component {
     super();
     this.state = {
       userInput: '',
-      filters: "",
+      filter: "song",
       fromDate: "",
       toDate: "",
-      //showing: true,
+      locationType: "",
+      location: "",
     };
-    this.handleData = this.handleData.bind(this);
-    this.handleToggle = this.handleToggle.bind(this);
+    this.handleSearchData = this.handleSearchData.bind(this);
+    this.handleFilterChange = this.handleFilterChange.bind(this);
     this.handleFromDateChange = this.handleFromDateChange.bind(this);
     this.handleToDateChange = this.handleToDateChange.bind(this);
+    this.handleLocationTypeChange = this.handleLocationTypeChange.bind(this);
+    this.handleLocationData = this.handleLocationData.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleData(data) {
+  handleSearchData(data) {
     this.setState({userInput: data});
   }
 
-  handleToggle(event, filters) {
-    this.setState( {filters: filters} )
+  handleLocationData(data) {
+    this.setState({location: data});
+  }
+
+  // Call API on submit
+  handleSubmit(event) {
+    //   fetch("https://api.example.com/items")
+    //       .then(res => res.json())
+    //       .then(
+    //           (result) => {
+    //             this.setState({
+    //               isLoaded: true,
+    //               items: result.items
+    //             });
+    //           },
+    //           // Note: it's important to handle errors here
+    //           // instead of a catch() block so that we don't swallow
+    //           // exceptions from actual bugs in components.
+    //           (error) => {
+    //             this.setState({
+    //               isLoaded: true,
+    //               error
+    //             });
+    //           }
+    //       )
+  }
+
+  handleFilterChange(event) {
+    this.setState( {filter: event.target.value} )
+  }
+
+  handleLocationTypeChange(event) {
+    this.setState( {locationType: event.target.value} )
   }
 
   handleFromDateChange(event) {
@@ -149,26 +188,31 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            <SearchAppBar classes={styles} handlerFromParent={this.handleData}></SearchAppBar>
-            <div>{this.state.userInput}</div>
-            <Grid container spacing={24} style={{"margin-top": "1rem"}} alignItems="center">
-              <Grid item xs={12}>
-                  <ToggleButtonGroup exclusive value={this.state.filters} onChange={this.handleToggle} style={toggleContainer}>
-                    <ToggleButton value="genre" style={{"color": "black"}}>
-                      Genre
-                    </ToggleButton>
-                    <ToggleButton value="artist" style={{"color": "black"}}>
-                      Artist
-                    </ToggleButton>
-                    <ToggleButton value="song" style={{"color": "black"}}>
-                      Song
-                    </ToggleButton>
-                  </ToggleButtonGroup>
+          <Paper elevation={1} style={{"width": "50%"}}>
+            <Grid container spacing={0} style={{"width": "100%"}}>
+              <Grid item xs={12} style={{}}>
+                <SearchAppBar classes={styles} searchLabel="Search" handlerFromParent={this.handleSearchData}></SearchAppBar>
               </Grid>
-              <Grid item xs={6}>
-                <Button variant="contained" color="secondary" disableFocusRipple disableRipple>
-                  <form noValidate >
+              <Grid item xs={12} >
+                <Grid container alignItems="center">
+                  <Grid xs={2} style={{"color":"black"}}>
+                    Filters
+                  </Grid>
+                  <Grid xs={10}>
+                    <RadioGroup
+                        row
+                        value={this.filter}
+                        onChange={this.handleFilterChange}
+                    >
+                      <FormControlLabel value="genre" control={<Radio color='default' />} label="Genre" />
+                      <FormControlLabel value="artist" control={<Radio color='default'/>} label="Artist" />
+                      <FormControlLabel value="song" control={<Radio color='default'/>} label="Song" />
+                    </RadioGroup>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={6} style={{"margin": "1rem 0 1rem 0"}}>
+                  <form noValidate style={{}}>
                     <TextField
                         id="date"
                         label="FROM"
@@ -180,11 +224,10 @@ class App extends Component {
                         onChange={this.handleFromDateChange}
                     />
                   </form>
-                </Button>
+
               </Grid>
-              <Grid item xs={6}>
-                <Button variant="contained" color="secondary" disableFocusRipple disableRipple>
-                  <form noValidate >
+              <Grid item xs={6} style={{"margin": "1rem 0 1rem 0"}}>
+                  <form noValidate>
                     <TextField
                         id="date"
                         label="TO"
@@ -196,13 +239,31 @@ class App extends Component {
                         onChange={this.handleToDateChange}
                     />
                   </form>
-                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container alignItems="center">
+                  <Grid item xs={3} style={{"color": "black"}}>
+                    Location Type
+                  </Grid>
+                  <Grid item xs={9}>
+                    <RadioGroup
+                        row
+                        value={this.locationType}
+                        onChange={this.handleLocationTypeChange}
+                    >
+                      <FormControlLabel value="province" control={<Radio color='default' />} label="Province/State" />
+                      <FormControlLabel value="city" control={<Radio color='default' />} label="City" />
+                    </RadioGroup>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <SearchAppBar classes={styles} searchLabel="Location" handlerFromParent={this.handleLocationData}></SearchAppBar>
               </Grid>
             </Grid>
-            console.log(testData)
             <ResultPage classes={styles} displayData={testData}></ResultPage>
-
-          </p>
+          </Paper>
+          <Button variant="contained" color="primary" style={{"margin-top": "1rem"}} onClick={this.handleSubmit}>Submit</Button>
         </header>
       </div>
     );
