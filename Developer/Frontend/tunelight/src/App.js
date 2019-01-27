@@ -129,8 +129,8 @@ class App extends Component {
     this.state = {
       userInput: '',
       filter: "song",
-      fromDate: "",
-      toDate: "",
+      fromDate: '2018-09-20T00:00:00.0000+0000',
+      toDate: '2018-09-24T00:00:00.0000+0000',
       locationType: "",
       location: "",
       showResults: false,
@@ -331,6 +331,7 @@ class App extends Component {
                         row
                         value={this.filter}
                         onChange={this.handleFilterChange}
+                        defaultValue='song'
                     >
                       <FormControlLabel value="genre" control={<Radio color='default' />} label="Genre" />
                       <FormControlLabel value="artist" control={<Radio color='default'/>} label="Artist" />
@@ -371,7 +372,7 @@ class App extends Component {
               <Grid item xs={12}>
                 <Grid container alignItems="center">
                   <Grid item xs={3} style={{"color": "black"}}>
-                    Location Type
+                    Search Within
                   </Grid>
                   <Grid item xs={9}>
                     <RadioGroup

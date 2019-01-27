@@ -34,7 +34,7 @@ export default class ResultPage extends React.Component{
 
   renderHeader(data) {
     var cells = [
-      <TableCell key="Count">Count</TableCell>
+      <TableCell key="Count">Total Plays</TableCell>
   ]
     if (data.length > 0) {
       var first = data[0];
