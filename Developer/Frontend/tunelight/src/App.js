@@ -16,6 +16,11 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from 'axios';
 import moment from 'moment';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 const styles = theme => ({
   root: {
@@ -129,7 +134,7 @@ class App extends Component {
       locationType: "",
       location: "",
       showResults: false,
-      data: {},
+      data: [],
     };
     this.handleSearchData = this.handleSearchData.bind(this);
     this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -152,6 +157,37 @@ class App extends Component {
   handleShowResults() {
     var toggle = this.state.showResults;
     this.setState({showResults: !toggle})
+  }
+
+  fetchData(filter, result) {
+    var info = [];
+    for (var i = 0; i < result.length; i++) {
+      if (this.state.filter === "song") {
+        axios.get("https://cors-anywhere.herokuapp.com/https://conuhacks-playback-api.touchtunes.com/song/" + result[i].songId, {
+          headers: {'client-secret': '9923ac9b-8fd3-421f-b0e5-952f807c6885'}
+        }).then(res => {
+          const succ = res.data;
+          info.push({"info": succ.songTitle});
+          this.setState({data: info});
+        });
+      }
+      else if (this.state.filter === "genre") {
+          info.push({"info": result[i].style});
+          this.setState({data: info});
+      }
+      // When the filter is Artist
+      else {
+        axios.get("https://cors-anywhere.herokuapp.com/https://conuhacks-playback-api.touchtunes.com/artist/" + result[i].artistId, {
+          headers: {'client-secret': '9923ac9b-8fd3-421f-b0e5-952f807c6885'}
+        }).then(res => {
+          const succ = res.data;
+          info.push({"info": succ.artistName});
+          this.setState({data: info});
+        });
+      }
+    }
+    this.setState({data: info});
+    console.log("App.js, DATA:", this.state.data);
   }
 
   // Call API on submit
@@ -192,17 +228,33 @@ class App extends Component {
       url_filter = "plays";
     }
     // Server side GET request
-    axios.get("http://172.30.181.238:9000/" + url_filter + "?", {
-      params: {
-        startDate: this.state.fromDate,
-        endDate: this.state.toDate,
-        state: this.state.location
-      }
-    }).then(res => {
-      const result = res.data;
-      console.log("TEST", result);
-      // this.setState({ data: result });
-    });
+    if (this.state.location === '') {
+      axios.get("http://172.30.181.238:9000/" + url_filter + "?", {
+        params: {
+          startDate: this.state.fromDate,
+          endDate: this.state.toDate
+        }
+      }).then(res => {
+        const result = res.data;
+        // Now we have the IDs and now we get the actually values
+        this.fetchData(url_filter, result);
+        // this.setState({ data: result });
+      });
+    }
+    else {
+      axios.get("http://172.30.181.238:9000/" + url_filter + "?", {
+        params: {
+          startDate: this.state.fromDate,
+          endDate: this.state.toDate,
+          state: this.state.location
+        }
+      }).then(res => {
+        const result = res.data;
+        // Now we have the IDs and now we get the actually values
+        this.fetchData(url_filter, result);
+        // this.setState({ data: result });
+      });
+    }
 
   }
 
@@ -257,7 +309,7 @@ class App extends Component {
                         id="date"
                         label="FROM"
                         type="date"
-                        defaultValue="2017-05-24"
+                        defaultValue="2018-09-20"
                         InputLabelProps={{
                           shrink: true,
                         }}
@@ -272,7 +324,7 @@ class App extends Component {
                         id="date"
                         label="TO"
                         type="date"
-                        defaultValue="2017-05-24"
+                        defaultValue="2018-09-24"
                         InputLabelProps={{
                           shrink: true,
                         }}
@@ -308,7 +360,7 @@ class App extends Component {
            :
 
           <div style={{"margin-top": "2rem"}}>
-          <ResultPage classes={styles} displayData={testData.state}></ResultPage>
+          <ResultPage classes={styles} displayData={this.state.data} filter={this.state.filter}></ResultPage>
           <Button variant="contained" color="primary" style={{"margin-top": "3rem"}} onClick={this.handleSubmit}>Search Again</Button>
           </div>
 

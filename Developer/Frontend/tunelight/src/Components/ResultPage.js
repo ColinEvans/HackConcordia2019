@@ -33,37 +33,40 @@ export default class ResultPage extends React.Component{
     }
 
     render(){
-        const displayData =  this.props.displayData;
-        const rows = [
-            this.createData(displayData[0], displayData[1]),
-            this.createData(displayData[0], displayData[2]),
-            this.createData(displayData[0], displayData[3]),
-        ];
-        console.log("test", rows);
+        // const displayData =  this.props.displayData[0] == undefined ? [{info: ""},{info: ""},{info: ""}] : this.props.displayData;
+        const displayData = this.props.displayData;
+        console.log("FINAL DATA: ", displayData);
+        const filter = this.props.filter;
+        // const rows = displayData;
         return (
          <Paper >
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>PlayDate</TableCell>
-                        <TableCell>ArtistId</TableCell>
-                        <TableCell>songId</TableCell>
-                        <TableCell>State</TableCell>
-                        <TableCell>Style</TableCell>
+                        <TableCell>Top List</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map(row => (
-                        <TableRow key={row.playDate}>
-                            {/*<TableCell component="th" scope="row"></TableCell>*/}
-                            <TableCell>{row.playDate}</TableCell>
-                            <TableCell>{row.artistId}</TableCell>
-                            <TableCell>{row.songId}</TableCell>
-                            <TableCell>{row.state}</TableCell>
-                            <TableCell>{row.state}</TableCell>
-                            {/*<TableCell align="right">{row.returnData}</TableCell>*/}
+                    <TableBody>
+                        <TableRow>
+                            <TableCell>{displayData[0] === undefined ? '' : displayData[0].info}</TableCell>
                         </TableRow>
-                    ))}
+                        <TableRow>
+                            <TableCell>{displayData[1] === undefined ? '' : displayData[1].info}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>{displayData[2] === undefined ? '' : displayData[2].info}</TableCell>
+                        </TableRow>
+                    </TableBody>
+                    {/*<TableCell>{displayData[1] == undefined ? '' : displayData[1].info}</TableCell>*/}
+                    {/*<TableCell>{displayData[2] == undefined ? '' : displayData[2].info}</TableCell>*/}
+                    {/*{rows.map(row => (*/}
+                        {/*<TableRow key={row.info}>*/}
+                            {/*/!*<TableCell component="th" scope="row"></TableCell>*!/*/}
+                            {/*<TableCell>{row.info}</TableCell>*/}
+                            {/*/!*<TableCell align="right">{row.returnData}</TableCell>*!/*/}
+                        {/*</TableRow>*/}
+                    {/*))}*/}
                 </TableBody>
             </Table>
          </Paper>
