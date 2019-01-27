@@ -32,6 +32,43 @@ export default class ResultPage extends React.Component{
         };
     }
 
+  renderHeader(data) {
+    var cells = [
+      <TableCell key="Count">Count</TableCell>
+  ]
+    if (data.length > 0) {
+      var first = data[0];
+      if (typeof first.songId !== 'undefined') {
+        cells.push(<TableCell key="song">Song Name</TableCell>)
+      }
+      if (typeof first.artistId !== 'undefined') {
+        cells.push(<TableCell key="artist">Artist</TableCell>)
+      }
+      if (typeof first.style !== 'undefined') {
+        cells.push(<TableCell key="genre">Genre</TableCell>)
+      }
+    }
+    return cells;
+  }
+
+  renderCells(data) {
+    return data.map((obj, i) => {
+      var cells = [
+        <TableCell key="count">{obj.count}</TableCell>
+    ]
+      if (typeof obj.songId !== 'undefined') {
+        cells.push(<TableCell key="song">{obj.songTitle}</TableCell>)
+      }
+      if (typeof obj.artistId !== 'undefined') {
+        cells.push(<TableCell key="artist">{obj.artistName}</TableCell>)
+      }
+      if (typeof obj.style !== 'undefined') {
+        cells.push(<TableCell key="genre">{obj.style}</TableCell>)
+      }
+      return <TableRow key={i}>{cells}</TableRow>
+    })
+  }
+
     render(){
         // const displayData =  this.props.displayData[0] == undefined ? [{info: ""},{info: ""},{info: ""}] : this.props.displayData;
         const displayData = this.props.displayData;
@@ -43,21 +80,11 @@ export default class ResultPage extends React.Component{
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Top List</TableCell>
+                      {this.renderHeader(displayData)}
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableBody>
-                        <TableRow>
-                            <TableCell>{displayData[0] === undefined ? '' : displayData[0].info}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>{displayData[1] === undefined ? '' : displayData[1].info}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>{displayData[2] === undefined ? '' : displayData[2].info}</TableCell>
-                        </TableRow>
-                    </TableBody>
+                  {this.renderCells(displayData)}
                     {/*<TableCell>{displayData[1] == undefined ? '' : displayData[1].info}</TableCell>*/}
                     {/*<TableCell>{displayData[2] == undefined ? '' : displayData[2].info}</TableCell>*/}
                     {/*{rows.map(row => (*/}

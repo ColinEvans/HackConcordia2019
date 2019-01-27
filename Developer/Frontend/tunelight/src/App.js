@@ -159,32 +159,61 @@ class App extends Component {
     this.setState({showResults: !toggle})
   }
 
+  fetchRow(i, row) {
+    if (this.state.filter === "song") {
+      axios.get("https://cors-anywhere.herokuapp.com/https://conuhacks-playback-api.touchtunes.com/song/" + row.songId, {
+        headers: {'client-secret': '9923ac9b-8fd3-421f-b0e5-952f807c6885'}
+      }).then(res => {
+        const succ = res.data;
+        this.setState((prevState) => {
+          var data = prevState.data.slice(0);
+          data[i].songTitle = succ.songTitle;
+          return { data: data };
+        })
+      });
+    }
+
+    if (this.state.filter !== "genre") {
+      axios.get("https://cors-anywhere.herokuapp.com/https://conuhacks-playback-api.touchtunes.com/artist/" + row.artistId, {
+        headers: {'client-secret': '9923ac9b-8fd3-421f-b0e5-952f807c6885'}
+      }).then(res => {
+        const succ = res.data;
+        this.setState((prevState) => {
+          var data = prevState.data.slice(0);
+          data[i].artistName = succ.artistName;
+          return { data: data };
+        })
+      });
+    }
+  }
+
   fetchData(filter, result) {
-    var info = [];
+    var info = result;
     for (var i = 0; i < result.length; i++) {
-      if (this.state.filter === "song") {
-        axios.get("https://cors-anywhere.herokuapp.com/https://conuhacks-playback-api.touchtunes.com/song/" + result[i].songId, {
-          headers: {'client-secret': '9923ac9b-8fd3-421f-b0e5-952f807c6885'}
-        }).then(res => {
-          const succ = res.data;
-          info.push({"info": succ.songTitle});
-          this.setState({data: info});
-        });
-      }
-      else if (this.state.filter === "genre") {
-          info.push({"info": result[i].style});
-          this.setState({data: info});
-      }
+      this.fetchRow(i, result[i]);
+      // if (this.state.filter === "song") {
+      //   axios.get("https://cors-anywhere.herokuapp.com/https://conuhacks-playback-api.touchtunes.com/song/" + result[i].songId, {
+      //     headers: {'client-secret': '9923ac9b-8fd3-421f-b0e5-952f807c6885'}
+      //   }).then(res => {
+      //     const succ = res.data;
+      //     info.push({"info": succ.songTitle});
+      //     this.setState({data: info});
+      //   });
+      // }
+      // else if (this.state.filter === "genre") {
+      //     info.push({"info": result[i].style});
+      //     this.setState({data: info});
+      // }
       // When the filter is Artist
-      else {
-        axios.get("https://cors-anywhere.herokuapp.com/https://conuhacks-playback-api.touchtunes.com/artist/" + result[i].artistId, {
-          headers: {'client-secret': '9923ac9b-8fd3-421f-b0e5-952f807c6885'}
-        }).then(res => {
-          const succ = res.data;
-          info.push({"info": succ.artistName});
-          this.setState({data: info});
-        });
-      }
+      // else {
+      //   axios.get("https://cors-anywhere.herokuapp.com/https://conuhacks-playback-api.touchtunes.com/artist/" + result[i].artistId, {
+      //     headers: {'client-secret': '9923ac9b-8fd3-421f-b0e5-952f807c6885'}
+      //   }).then(res => {
+      //     const succ = res.data;
+      //     info.push({"info": succ.artistName});
+      //     this.setState({data: info});
+      //   });
+      // }
     }
     this.setState({data: info});
     console.log("App.js, DATA:", this.state.data);
@@ -221,7 +250,7 @@ class App extends Component {
     if (this.state.filter === "genre") {
       url_filter = "styles";
     }
-    else if (this.state.filter === "artists") {
+    else if (this.state.filter === "artist") {
       url_filter = "artists";
     }
     else {
