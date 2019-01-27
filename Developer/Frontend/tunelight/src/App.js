@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './favicon.ico';
 import './App.css';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 import SearchAppBar from './Components/SearchAppBar';
+import ResultPage from './Components/ResultPage';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -78,6 +79,39 @@ const toggleContainer = {
   justifyContent: 'center',
 };
 
+const testData = [
+    "state",
+    {
+        playDate:"2018-02-19T21:00:02.000+0000",
+        artistId:186,
+        songId:18451301,
+        state:"NE",
+        style:"ROCK",
+        latitude:41.50082,
+        longitude:-99.6809
+    },
+
+    {
+        playDate:"2018-02-19T21:00:02.000+0000",
+        artistId:186,
+        songId:18451301,
+        state:"NE",
+        style:"ROCK",
+        latitude:41.50082,
+        longitude:-99.6809
+        },
+
+    {
+        playDate:"2018-02-19T21:00:02.000+0000",
+        artistId:186,
+        songId:18451301,
+        state:"NE",
+        style:"ROCK",
+        latitude:41.50082,
+        longitude:-99.6809
+        },
+];
+
 class App extends Component {
   constructor() {
     super();
@@ -86,6 +120,7 @@ class App extends Component {
       filters: "",
       fromDate: "",
       toDate: "",
+      //showing: true,
     };
     this.handleData = this.handleData.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -164,6 +199,9 @@ class App extends Component {
                 </Button>
               </Grid>
             </Grid>
+            console.log(testData)
+            <ResultPage classes={styles} displayData={testData}></ResultPage>
+
           </p>
         </header>
       </div>
