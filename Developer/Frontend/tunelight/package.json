@@ -5,6 +5,8 @@
   "dependencies": {
     "@material-ui/core": "^3.9.1",
     "@material-ui/lab": "^3.0.0-alpha.29",
+    "axios": "^0.18.0",
+    "moment": "^2.24.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "2.1.3"

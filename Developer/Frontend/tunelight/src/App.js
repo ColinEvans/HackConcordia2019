@@ -14,6 +14,7 @@ import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import axios from 'axios';
 
 const styles = theme => ({
   root: {
@@ -155,19 +156,53 @@ class App extends Component {
   // Call API on submit
   handleSubmit(event) {
     this.handleShowResults();
-    //   fetch("https://api.example.com/items")
-    //       .then(res => res.json())
-    //       .then(
-    //           (result) => {
-    //             this.setState({data: result});
-    //           },
-    //           // Note: it's important to handle errors here
-    //           // instead of a catch() block so that we don't swallow
-    //           // exceptions from actual bugs in components.
-    //           (error) => {
-    //               console.log("Got an error doing GET request", error);
-    //           }
-    //       )
+    // Google maps api get request
+    if (this.state.locationType === "city") {
+      axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+        params: {
+          key: 'AIzaSyC8IsN7vRL7WfEBCXJYmHLfRffwRCVG3YM',
+          address: this.state.location
+        }
+      }).then(res => {
+        const result = res.data.results;
+        var shortname = '';
+        if (result.length !== 0) {
+          var address_components = result[0].address_components;
+          // Parse google maps api and get the state short name
+          for (var i = 0; i < address_components.length; i++) {
+            if (address_components[i].types[0] === "administrative_area_level_1") {
+              shortname = address_components[i].short_name;
+            }
+          }
+          this.setState({location: shortname});
+        }
+      });
+    }
+
+    var url_filter = '';
+
+    if (this.state.filter === "genre") {
+      url_filter = "styles";
+    }
+    else if (this.state.filter === "artists") {
+      url_filter = "artists";
+    }
+    else {
+      url_filter = "plays";
+    }
+    // Server side GET request
+    axios.get("http://172.30.181.238:9000/" + url_filter + "?", {
+      params: {
+        startDate: this.state.fromDate,
+        endDate: this.state.toDate,
+        state: this.state.location
+      }
+    }).then(res => {
+      const result = res.data;
+      console.log("TEST", result);
+      // this.setState({ data: result });
+    });
+
   }
 
   handleFilterChange(event) {
@@ -179,11 +214,13 @@ class App extends Component {
   }
 
   handleFromDateChange(event) {
-    this.setState({fromDate: event.target.value})
+    var date = new Date(event.target.value).toISOString();
+    this.setState({fromDate: date})
   }
 
   handleToDateChange(event) {
-    this.setState({toDate: event.target.value})
+    var date = new Date(event.target.value).toISOString();
+    this.setState({toDate: date})
   }
 
   render() {
@@ -194,9 +231,6 @@ class App extends Component {
           {!this.state.showResults ?
           <Paper elevation={1} style={{"width": "50%", "margin": "2rem 0 2rem 0", "padding": "2rem"}}>
             <Grid container spacing={0} style={{"width": "100%"}}>
-              <Grid item xs={12} style={{}}>
-                <SearchAppBar classes={styles} searchLabel="Search" handlerFromParent={this.handleSearchData}></SearchAppBar>
-              </Grid>
               <Grid item xs={12} >
                 <Grid container alignItems="center">
                   <Grid xs={2} style={{"color":"black"}}>
